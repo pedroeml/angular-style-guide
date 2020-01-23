@@ -5,6 +5,7 @@
 1. [HTML](#html)
 2. [TypeScript](#typescript)
 3. [Unit testing](#unit-testing)
+4. [RxJs](#rxjs)
 
 ## HTML
 
@@ -360,6 +361,33 @@ constructor(
     private readonly myService: MyService) { }
 ```
 
+### Input & Output
+```javascript
+// BAD
+@Component({
+    ...
+})
+export class MyComponent {
+    @Input() something: Something;
+    @Output() didSomething: EventEmitter<Something> = new EventEmitter<Something>();
+    ...
+}
+// GOOD
+@Component({
+    ...
+})
+export class MyComponent {
+    @Input()
+    public something: Something;
+    @Output()
+    public readonly didSomething: EventEmitter<Something>;
+    constructor() {
+        didSomething = new EventEmitter<Something>();
+    }
+    ...
+}
+```
+
 ## Unit testing
 
 ### `spyOn` method without Stub class
@@ -602,4 +630,10 @@ describe('When the method [doSomething] is called', () => {
         });
     });
 });
+```
+
+## RxJs
+
+```javascript
+// TODO
 ```
