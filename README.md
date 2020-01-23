@@ -1,5 +1,11 @@
 # Angular Code Style Guidelines
 
+## Table of Contents
+
+1. [HTML](#html)
+2. [TypeScript](#typescript)
+3. [Unit testing](#unit-testing)
+
 ## HTML
 
 ### Properties
