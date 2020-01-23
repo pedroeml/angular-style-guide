@@ -322,16 +322,16 @@ import { MyService } from '../my-module/my-service.service.ts';
 For injecting dependencies to a component (or any class annotated with `@Injectable`) constructors should be without access modifier. It's also recommended to its dependencies be `private` and `readonly`, thus there's now way to an external component overwrite another component providers.
 
 ```typescript
-// BAD
+// BAD (bad line breaking)
 public constructor(public myMapper: MyMapper,
     public myService: MyService) { }
 
-// BAD
+// BAD (no comma)
 constructor(
     public myService: MyService
 ) { }
 
-// BAD
+// BAD (empty line in constructor scope)
 constructor(
     public myService: MyService
 ) {
@@ -342,13 +342,13 @@ constructor(
 constructor() { }
 
 
-// GOOD
+// GOOD (for git diffs)
 constructor(
     private readonly myMapper: MyMapper,
     private readonly myService: MyService,
 ) { }
 
-// GOOD
+// GOOD (for avoiding unnecessary lines)
 constructor(
     private readonly myMapper: MyMapper,
     private readonly myService: MyService) { }
