@@ -353,3 +353,247 @@ constructor(
     private readonly myMapper: MyMapper,
     private readonly myService: MyService) { }
 ```
+
+## Unit testing
+
+### `spyOn` method without Stub class
+
+```javascript
+// BAD
+describe('When the method [doSomething] is called', () => {
+    describe('When the class property [isChecked] is true', () => {
+        beforeEach(() => {
+            spyOn(myService, 'getSomething').and.callFake(() => {
+                return of(new Something());
+            });
+            ...
+        });
+        ...
+    });
+});
+
+// GOOD
+describe('When the method [doSomething] is called', () => {
+    describe('When the class property [isChecked] is true', () => {
+        beforeEach(() => {
+            spyOn(myService, 'getSomething').and.returnValue(of(new Something()));
+            ...
+        });
+        ...
+    });
+});
+```
+
+### `spyOn` method with Stub class
+```javascript
+// GOOD
+// my-service.service.stub.ts
+export class MyServiceStub {
+    ...
+    public getSomething(): Observable<Something> {
+        return of(new Something());
+    }
+}
+// my-component.component.spec.ts
+beforeEach(async(() => {
+    TestBed.configureTestingModule({
+        providers: [
+            { provide: MyService, useClass: MyServiceStub },
+            ...
+        ],
+        ...
+    }).compileComponents().then(() => {
+        ...
+    });
+}));
+
+describe('When the method [doSomething] is called', () => {
+    describe('When the class property [isChecked] is true', () => {
+        beforeEach(() => {
+            spyOn(myService, 'getSomething').and.callThrough();
+            ...
+        });
+        ...
+    });
+});
+```
+
+### Running the methods you're testing outside `beforeEach`
+
+Besides the code duplication problem, you may be prompt to be calling other method instead accidently or passing different params to the method.
+
+```javascript
+// BAD
+describe('When the method [doSomething] is called', () => {
+    describe('When the class property [isChecked] is true', () => {
+        beforeEach(() => {
+            spyOn(myService, 'getSomething').and.callThrough();
+
+            myComponent.isChecked = true;
+            myComponent.isAbleToDoSomething = true;
+        });
+
+        it('Should have called [getSomething] from MyService', () => {
+            myComponent.doSomething(123);
+            expect(myService.getSomething).toHaveBeenCalledWith(123);
+        });
+
+        it('Should have changed [isChecked] to false', () => {
+            myComponent.doSomething(123);
+            expect(myComponent.isChecked).toBeFalsy();
+        });
+    });
+});
+
+// GOOD
+describe('When the method [doSomething] is called', () => {
+    const code: number = 123;
+
+    describe('When the class property [isChecked] is true', () => {
+        beforeEach(() => {
+            spyOn(myService, 'getSomething').and.callThrough();
+
+            myComponent.isChecked = true;
+            myComponent.isAbleToDoSomething = true;
+
+            myComponent.doSomething(code);
+        });
+
+        it('Should have called [getSomething] from MyService', () => {
+            expect(myService.getSomething).toHaveBeenCalledWith(code);
+        });
+
+        it('Should have changed [isChecked] to false', () => {
+            expect(myComponent.isChecked).toBeFalsy();
+        });
+    });
+});
+```
+
+### `beforeEach` scope duplication
+
+```javascript
+// BAD
+describe('When the method [doSomething] is called', () => {
+    const code: number = 123;
+
+    describe('When the class property [isChecked] is true', () => {
+        beforeEach(() => {
+            spyOn(myService, 'getSomething').and.callThrough();
+
+            myComponent.isChecked = true;
+            myComponent.isAbleToDoSomething = true;
+            myComponent.doSomething(code);
+        });
+
+        ...
+    });
+
+    describe('When the class property [isChecked] is false', () => {
+        beforeEach(() => {
+            spyOn(myService, 'getSomething').and.callThrough();
+
+            myComponent.isChecked = false;
+            myComponent.isAbleToDoSomething = true;
+            myComponent.doSomething(code);
+        });
+
+        ...
+    });
+});
+
+// GOOD
+describe('When the method [doSomething] is called', () => {
+    const code: number = 123;
+
+    beforeEach(() => {
+        spyOn(myService, 'getSomething').and.callThrough();
+
+        myComponent.isAbleToDoSomething = true;
+    });
+
+    describe('When the class property [isChecked] is true', () => {
+        beforeEach(() => {
+            myComponent.isChecked = true;
+            myComponent.doSomething(code);
+        });
+
+        ...
+    });
+
+    describe('When the class property [isChecked] is false', () => {
+        beforeEach(() => {
+            myComponent.isChecked = false;
+            myComponent.doSomething(code);
+        });
+
+        ...
+    });
+});
+```
+
+### `it` scope duplication
+
+```javascript
+// BAD
+describe('When the method [doSomething] is called', () => {
+    const code: number = 123;
+    ...
+
+    describe('When the class property [isChecked] is true', () => {
+        ...
+
+        it('Should have called [getSomething] from MyService', () => {
+            expect(myService.getSomething).toHaveBeenCalledWith(code);
+        });
+
+        it('Should have changed [isChecked] to false', () => {
+            expect(myComponent.isChecked).toBeFalsy();
+        });
+    });
+
+    describe('When the class property [isChecked] is false', () => {
+        ...
+
+        it('Should have called [getSomething] from MyService', () => {
+            expect(myService.getSomething).toHaveBeenCalledWith(code);
+        });
+
+        it('Should have changed [isChecked] to true', () => {
+            expect(myComponent.isChecked).toBeTruthy();
+        });
+    });
+});
+
+// GOOD
+const doSomethingBaseCases = (code: number, isChecked: boolean) => {
+    it('Should have called [getSomething] from MyService', () => {
+        expect(myService.getSomething).toHaveBeenCalledWith(code);
+    });
+
+    it(`Should have changed [isChecked] to ${isChecked}`, () => {
+        expect(myComponent.isChecked).toBe(isChecked);
+    });
+};
+
+describe('When the method [doSomething] is called', () => {
+    const code: number = 123;
+    ...
+
+    describe('When the class property [isChecked] is true', () => {
+        ...
+
+        describe('When the in common base cases are checked', () => {
+            doSomethingBaseCases(code, false);
+        });
+    });
+
+    describe('When the class property [isChecked] is false', () => {
+        ...
+
+        describe('When the in common base cases are checked', () => {
+            doSomethingBaseCases(code, true);
+        });
+    });
+});
+```
