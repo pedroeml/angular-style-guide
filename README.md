@@ -133,7 +133,7 @@ If you're making an element accessible through a variable, make sure you left it
 
 ### Method call signature
 
-```typescript
+```javascript
 // BAD
 doSomething(thingA, thingB, thingC, thingD,
     thingE, thingF);
@@ -156,7 +156,7 @@ doSomething(thingA, thingB, thingC, thingD, thingE, thingF);
 
 ### Multiple return statements
 
-```typescript
+```javascript
 // BAD
 public doSomething(thing: Thing): Something {
     if (thing.oneThing === 1) {
@@ -192,7 +192,7 @@ public doSomething(thing: Thing): Something {
 
 ### Return boolean expression
 
-```typescript
+```javascript
 // BAD
 public canDoSomething(thing: Thing): boolean {
     return !!thing && thing.oneThing === 1 && !!thing.otherThing && thing.otherThing.oneThing === 1;
@@ -219,7 +219,7 @@ public canDoSomething(thing: Thing): boolean {
 
 If your method may receive a `null`/`undefined` parameter and you're implemeting something to handle that inside of its scope, you should also make it explicit on the method's signature that it may receive a nullable type.
 
-```typescript
+```javascript
 
 // BAD
 public doSomething(thing: Thing): Something {
@@ -242,7 +242,7 @@ public doSomething(thing?: Thing): Something {
 
 If your code make use of some mapper methods and some values in your code may be `null`/`undefined`, the flow control must be outside of the mapper methods. Thus you'll avoid some bugs hard to trace and won't add more responsabilities to a mapper method.
 
-```typescript
+```javascript
 // BAD
 public static mapToSomething(thing?: Thing): Something {
     if (!thing) {
@@ -271,7 +271,7 @@ public static doSomething(things: Thing[]): void {
 
 ### Arrow Functions
 
-```typescript
+```javascript
 // BAD
 public static doSomething(things: Thing[]): void {
     const somethingList: Something[] = things.filter(thing => {
@@ -301,7 +301,7 @@ public static doSomething(things: Thing[]): void {
 
 Try to keep everything you need from one file in one line. If one line with between 150 to 200 chars is not enough, maybe it you should consider refactoring the class you're implementing breaking it into smaller ones.
 
-```typescript
+```javascript
 // BAD
 import {MyService} from "./../my-module/my-service.service.ts";
 
@@ -321,7 +321,7 @@ import { MyService } from '../my-module/my-service.service.ts';
 
 For injecting dependencies to a component (or any class annotated with `@Injectable`) constructors should be without access modifier. It's also recommended to its dependencies be `private` and `readonly`, thus there's now way to an external component overwrite another component providers.
 
-```typescript
+```javascript
 // BAD (bad line breaking)
 public constructor(public myMapper: MyMapper,
     public myService: MyService) { }
