@@ -326,7 +326,7 @@ import { MyService } from '../my-module/my-service.service.ts';
 
 ### Dependecy injection via constructor method 
 
-For injecting dependencies to a component (or any class annotated with `@Injectable`) constructors should be without access modifier. It's also recommended to its dependencies be `private` and `readonly`, thus there's now way to an external component overwrite another component providers.
+For injecting dependencies to a component (or any class annotated with `@Injectable`) constructors should be without access modifier. It's also recommended to its dependencies be `private` and `readonly`, thus there's no way to an external component overwrite another component providers.
 
 ```javascript
 // BAD (bad line breaking)
@@ -381,6 +381,7 @@ export class MyComponent {
     public something: Something;
     @Output()
     public readonly didSomething: EventEmitter<Something>;
+
     constructor() {
         didSomething = new EventEmitter<Something>();
     }
