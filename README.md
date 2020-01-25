@@ -168,7 +168,11 @@ doSomething(thingA, thingB, thingC, thingD, thingE, thingF);
 public doSomething(thing: Thing): Something {
     if (thing.oneThing === 1) {
         return doOneThing(thing);
-    } else if (thing.otherThing) {
+    }
+    if (thing.otherThing) {
+        if (thing.otherThing.oneThing !== 1) {
+            return doOneThing(thing.otherTing.oneThing);
+        }
         return doOtherThing(thing);
     }
 
@@ -181,7 +185,18 @@ public doSomething(thing: Thing): Something {
         thing.otherThing ? doOtherThing(thing) : doSomethingElse(thing);
 }
 
-// GOOD
+// GOOD (only if each block has 1 or 2 lines)
+public doSomething(thing: Thing): Something {
+    if (thing.oneThing === 1) {
+        return doOneThing(thing);
+    } else if (thing.otherThing) {
+        return doOtherThing(thing);
+    }
+
+    return doSomethingElse(thing);
+}
+
+// GOOD (only if the method scope doesn't have many ifs)
 public doSomething(thing: Thing): Something {
     let something: Something;
 
