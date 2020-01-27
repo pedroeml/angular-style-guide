@@ -6,6 +6,7 @@
 2. [TypeScript](#typescript)
 3. [Unit testing](#unit-testing)
 4. [RxJs](#rxjs)
+5. [Filenames](#filesname)
 
 ## HTML
 
@@ -324,7 +325,7 @@ public static doSomething(things: Thing[]): void {
 Try to keep everything you need from one file in one line. If one line with between 150 to 200 chars is not enough, maybe it you should consider refactoring the class you're implementing breaking it into smaller ones.
 
 ```javascript
-// BAD
+// BAD (double quotes)
 import {MyService} from "./../my-module/my-service.service.ts";
 
 // BAD
@@ -387,6 +388,17 @@ export class MyComponent {
     @Output() didSomething: EventEmitter<Something> = new EventEmitter<Something>();
     ...
 }
+
+// BAD (Avoid aliasing input/output properties)
+@Component({
+    ...
+})
+export class MyComponent {
+    @Input("doSomething") something: Something;
+    @Output("something") didSomething: EventEmitter<Something> = new EventEmitter<Something>();
+    ...
+}
+
 // GOOD
 @Component({
     ...
@@ -652,4 +664,11 @@ describe('When the method [doSomething] is called', () => {
 
 ```javascript
 // TODO
+```
+
+
+## Filesname
+
+```filesname
+
 ```
