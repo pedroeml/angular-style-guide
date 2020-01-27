@@ -324,7 +324,7 @@ public static doSomething(things: Thing[]): void {
 Try to keep everything you need from one file in one line. If one line with between 150 to 200 chars is not enough, maybe it you should consider refactoring the class you're implementing breaking it into smaller ones.
 
 ```javascript
-// BAD
+// BAD (double quotes)
 import {MyService} from "./../my-module/my-service.service.ts";
 
 // BAD
