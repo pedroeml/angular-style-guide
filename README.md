@@ -6,6 +6,7 @@
 2. [TypeScript](#typescript)
 3. [Unit testing](#unit-testing)
 4. [RxJs](#rxjs)
+5. [Filenames](#filesname)
 
 ## HTML
 
@@ -387,6 +388,17 @@ export class MyComponent {
     @Output() didSomething: EventEmitter<Something> = new EventEmitter<Something>();
     ...
 }
+
+// BAD (Avoid aliasing input/output properties)
+@Component({
+    ...
+})
+export class MyComponent {
+    @Input("doSomething") something: Something;
+    @Output("something") didSomething: EventEmitter<Something> = new EventEmitter<Something>();
+    ...
+}
+
 // GOOD
 @Component({
     ...
@@ -652,4 +664,11 @@ describe('When the method [doSomething] is called', () => {
 
 ```javascript
 // TODO
+```
+
+
+## Filesname
+
+```filesname
+
 ```
